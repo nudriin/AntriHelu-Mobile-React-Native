@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Adaptive.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.nudriin.AntriHelu"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,6 +28,9 @@
     "extra": {
       "proxy": {
         "/api": "https://api-queue.nudriin.space"
+      },
+      "eas": {
+        "projectId": "3d27abdd-5116-4cdf-bef7-484e9ce1c4b0"
       }
     }
   }
