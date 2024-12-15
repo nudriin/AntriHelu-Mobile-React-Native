@@ -1,5 +1,12 @@
 import React, { useState } from "react"
-import { Button, Text, TextInput, View, ActivityIndicator } from "react-native"
+import {
+    Text,
+    TextInput,
+    View,
+    ActivityIndicator,
+    TouchableOpacity,
+    Image,
+} from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -7,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "../types"
 import config from "../config"
+import image from "../constants/image"
 
 const formSchema = z.object({
     email: z.string().email({ message: "Email tidak valid" }).min(1),
@@ -64,44 +72,64 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     }
 
     return (
-        <View style={{ padding: 20 }}>
-            <Text>Email</Text>
-            <Controller
-                name="email"
-                control={form.control}
-                render={({ field: { onChange, value } }) => (
-                    <TextInput
-                        style={{ borderWidth: 1, marginBottom: 10 }}
-                        placeholder="Email"
-                        value={value}
-                        onChangeText={onChange}
-                    />
-                )}
+        <View className="h-full w-full p-6 items-center justify-center">
+            <Text className="font-bold text-3xl text-center text-blck mb-4">
+                Selamat Datang di Dinas Pendidikan Kota Palangka Raya
+            </Text>
+            <Image
+                source={image.disdikLogo}
+                className="w-[100px] h-[130px] mb-4"
             />
+            <Text className="text-center font-poppinsR text-lightGrey mb-4">
+                Mohon inputkan data anda dengan benar
+            </Text>
+            <View className="w-full">
+                <Text className="font-bold text-lg mb-1">Email</Text>
+                <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field: { onChange, value } }) => (
+                        <TextInput
+                            className="border rounded-lg mb-4 p-4"
+                            placeholder="Email"
+                            value={value}
+                            onChangeText={onChange}
+                        />
+                    )}
+                />
+            </View>
 
-            <Text>Password</Text>
-            <Controller
-                name="password"
-                control={form.control}
-                render={({ field: { onChange, value } }) => (
-                    <TextInput
-                        style={{ borderWidth: 1, marginBottom: 10 }}
-                        placeholder="Password"
-                        secureTextEntry
-                        value={value}
-                        onChangeText={onChange}
-                    />
-                )}
-            />
+            <View className="w-full">
+                <Text className="font-bold text-lg mb-1">Password</Text>
+                <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field: { onChange, value } }) => (
+                        <TextInput
+                            className="border rounded-lg mb-4 p-4"
+                            placeholder="Password"
+                            secureTextEntry
+                            value={value}
+                            onChangeText={onChange}
+                        />
+                    )}
+                />
+            </View>
 
             {loading ? (
                 <ActivityIndicator size="large" />
             ) : (
-                <Button
-                    title="Login"
-                    onPress={form.handleSubmit(handleLogin)}
-                    disabled={form.formState.isSubmitting}
-                />
+                <View className="w-full">
+                    <TouchableOpacity
+                        className="bg-blues rounded-lg p-3"
+                        onPress={form.handleSubmit(handleLogin)}
+                        disabled={form.formState.isSubmitting}
+                    >
+                        <Text className="text-white text-xl font-poppinsR text-center">
+                            Login
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             )}
         </View>
     )

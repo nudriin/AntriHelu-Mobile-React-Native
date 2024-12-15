@@ -147,7 +147,10 @@ export default function AddQueueScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <ScrollView
+            className="mt-8 bg-ash"
+            contentContainerStyle={{ padding: 20 }}
+        >
             {locket.map((value, index) => {
                 const totalQueue = queues.get(value.id)?.total ?? 0
                 const locketCode = getLocketCodeFromName(value.name)
@@ -159,65 +162,33 @@ export default function AddQueueScreen() {
                     totalQueue + 1
                 ).padStart(2, "0")}`
 
-                let backgroundColor = "#fff"
-                if (index === 0) backgroundColor = "#8E8CFF"
-                else if (index === 1) backgroundColor = "#FFB800"
-                // Add other color conditions as necessary
-
                 return (
                     <View
+                        className="text-center bg-white border-2 mb-4 p-6 rounded-3xl"
                         key={index}
-                        style={{
-                            marginBottom: 20,
-                            backgroundColor,
-                            padding: 20,
-                            borderRadius: 10,
-                        }}
                     >
-                        <Text
-                            style={{
-                                fontSize: 24,
-                                fontWeight: "bold",
-                                marginBottom: 10,
-                            }}
-                        >
-                            Antrian Loket {value.name}
+                        <Text className="text-center text-blck font-medium text-2xl mb-2">
+                            Antrian Loket
                         </Text>
-                        <Text
-                            style={{
-                                fontSize: 32,
-                                fontWeight: "bold",
-                                marginBottom: 10,
-                            }}
-                        >
+                        <Text className="text-center text-blues text-4xl font-bold mt-4 mb-4">
                             {total}
                         </Text>
-                        <Text style={{ fontSize: 20, marginBottom: 20 }}>
-                            Loket {value.name}
+                        <Text className="text-center text-blck font-medium text-2xl mb-3">
+                            {value.name.toUpperCase()}
                         </Text>
 
                         <TouchableOpacity
+                            className="bg-blues text-center p-4 rounded-lg"
                             onPress={(e) => {
                                 addQueue(value.id)
                                 printQueue(value.name, total)
                             }}
                             disabled={loading}
-                            style={{
-                                backgroundColor: "#4CAF50",
-                                padding: 10,
-                                borderRadius: 5,
-                                alignItems: "center",
-                            }}
                         >
                             {loading ? (
                                 <ActivityIndicator color="#fff" />
                             ) : (
-                                <Text
-                                    style={{
-                                        color: "#fff",
-                                        fontWeight: "bold",
-                                    }}
-                                >
+                                <Text className="text-center text-white font-bold">
                                     Tambah Antrian
                                 </Text>
                             )}
