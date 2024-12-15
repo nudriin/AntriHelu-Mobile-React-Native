@@ -1,5 +1,5 @@
-import React, { useRef } from "react"
-import { Button, Text, TextInput, View } from "react-native"
+import React, { useState } from "react"
+import { Button, Text, TextInput, View, ActivityIndicator } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -32,27 +32,33 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         },
     })
 
+    const [loading, setLoading] = useState(false)
+
     const handleLogin = async (data: FormSchemaType) => {
+        setLoading(true)
         try {
             const response = await fetch(
                 "https://api-queue.nudriin.space/api/users/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...data }),
+                    body: JSON.stringify(data),
                 }
             )
 
             const responseBody = await response.json()
 
-            if (responseBody.token) {
-                await AsyncStorage.setItem("authToken", responseBody.token)
-                navigation.navigate("HomeScreen") // This will now have proper type checking
+            if (responseBody.data) {
+                await AsyncStorage.setItem("authToken", responseBody.data.token)
+                navigation.navigate("AddQueueScreen") // This will now have proper type checking
             } else {
                 alert("Login gagal, periksa email/password Anda!")
             }
         } catch (error) {
             console.error(error)
+            alert("Something went wrong, please try again.")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -62,11 +68,12 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             <Controller
                 name="email"
                 control={form.control}
-                render={({ field }) => (
+                render={({ field: { onChange, value } }) => (
                     <TextInput
                         style={{ borderWidth: 1, marginBottom: 10 }}
                         placeholder="Email"
-                        {...field}
+                        value={value}
+                        onChangeText={onChange}
                     />
                 )}
             />
@@ -75,21 +82,26 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             <Controller
                 name="password"
                 control={form.control}
-                render={({ field }) => (
+                render={({ field: { onChange, value } }) => (
                     <TextInput
                         style={{ borderWidth: 1, marginBottom: 10 }}
                         placeholder="Password"
                         secureTextEntry
-                        {...field}
+                        value={value}
+                        onChangeText={onChange}
                     />
                 )}
             />
 
-            <Button
-                title="Login"
-                onPress={form.handleSubmit(handleLogin)}
-                disabled={form.formState.isSubmitting}
-            />
+            {loading ? (
+                <ActivityIndicator size="large" />
+            ) : (
+                <Button
+                    title="Login"
+                    onPress={form.handleSubmit(handleLogin)}
+                    disabled={form.formState.isSubmitting}
+                />
+            )}
         </View>
     )
 }
