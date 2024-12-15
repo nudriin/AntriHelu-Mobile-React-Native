@@ -1,3 +1,4 @@
+import { options } from "./../node_modules/colorette/index.d"
 import * as Print from "expo-print"
 import getLocketCodeFromName from "./getLocketCodeFromName"
 
@@ -72,18 +73,14 @@ const printQueue = async (locketName: string, totalQueue: string) => {
 </html>
         `
 
-        const { uri } = await Print.printToFileAsync({
-            html: html,
-        })
-
-        // Optional: Buka print dialog
         await Print.printAsync({
-            uri: uri,
+            html: html,
         })
 
         console.log("Printing completed")
     } catch (error) {
         console.error("Error during printing:", error)
+        alert("Terjadi kesalahan saat melakukan print")
     }
 }
 
