@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     Text,
     TextInput,
@@ -42,6 +42,20 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     })
 
     const [loading, setLoading] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+
+    const checkLoginStatus = async () => {
+        const token = await AsyncStorage.getItem("authToken")
+        setIsLoggedIn(!!token) // Jika token ada, berarti sudah login
+    }
+
+    useEffect(() => {
+        checkLoginStatus()
+    }, [])
+
+    if (isLoggedIn) {
+        navigation.navigate("AddQueueScreen")
+    }
 
     const handleLogin = async (data: FormSchemaType) => {
         setLoading(true)
@@ -72,25 +86,25 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     }
 
     return (
-        <View className="h-full w-full p-6 items-center justify-center">
-            <Text className="font-bold text-3xl text-center text-blck mb-4">
+        <View className="items-center justify-center w-full h-full p-6">
+            <Text className="mb-4 text-3xl font-bold text-center text-blck">
                 Selamat Datang di Dinas Pendidikan Kota Palangka Raya
             </Text>
             <Image
                 source={image.disdikLogo}
                 className="w-[100px] h-[130px] mb-4"
             />
-            <Text className="text-center font-poppinsR text-lightGrey mb-4">
+            <Text className="mb-4 text-center font-poppinsR text-lightGrey">
                 Mohon inputkan data anda dengan benar
             </Text>
             <View className="w-full">
-                <Text className="font-bold text-lg mb-1">Email</Text>
+                <Text className="mb-1 text-lg font-bold">Email</Text>
                 <Controller
                     name="email"
                     control={form.control}
                     render={({ field: { onChange, value } }) => (
                         <TextInput
-                            className="border rounded-lg mb-4 p-4"
+                            className="p-4 mb-4 border rounded-lg"
                             placeholder="Email"
                             value={value}
                             onChangeText={onChange}
@@ -100,13 +114,13 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             </View>
 
             <View className="w-full">
-                <Text className="font-bold text-lg mb-1">Password</Text>
+                <Text className="mb-1 text-lg font-bold">Password</Text>
                 <Controller
                     name="password"
                     control={form.control}
                     render={({ field: { onChange, value } }) => (
                         <TextInput
-                            className="border rounded-lg mb-4 p-4"
+                            className="p-4 mb-4 border rounded-lg"
                             placeholder="Password"
                             secureTextEntry
                             value={value}
@@ -121,11 +135,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             ) : (
                 <View className="w-full">
                     <TouchableOpacity
-                        className="bg-blues rounded-lg p-3"
+                        className="p-3 rounded-lg bg-blues"
                         onPress={form.handleSubmit(handleLogin)}
                         disabled={form.formState.isSubmitting}
                     >
-                        <Text className="text-white text-xl font-poppinsR text-center">
+                        <Text className="text-xl text-center text-white font-poppinsR">
                             Login
                         </Text>
                     </TouchableOpacity>

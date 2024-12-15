@@ -5,17 +5,19 @@ import LoginScreen from "./screens/LoginScreen"
 import AddQueueScreen from "./screens/AddQueueScreen"
 import "./global.css"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import "react-native-gesture-handler"
 
 const Stack = createStackNavigator()
 
 export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
 
+    const checkLoginStatus = async () => {
+        const token = await AsyncStorage.getItem("authToken")
+        setIsLoggedIn(!!token) // Jika token ada, berarti sudah login
+    }
+
     useEffect(() => {
-        const checkLoginStatus = async () => {
-            const token = await AsyncStorage.getItem("authToken")
-            setIsLoggedIn(!!token) // Jika token ada, berarti sudah login
-        }
         checkLoginStatus()
     }, [])
 
