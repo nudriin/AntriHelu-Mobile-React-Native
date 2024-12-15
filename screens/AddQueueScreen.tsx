@@ -9,13 +9,8 @@ import {
 } from "react-native"
 import { socket } from "../socket/socket"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-function getLocketCodeFromName(locketName: string | undefined) {
-    if (!locketName) return ""
-    const name = locketName.toUpperCase()
-    if (name.length < 2) return name // Jika nama terlalu pendek, kembalikan apa adanya
-    return `${name[0]}${name[name.length - 1]}` // Mengambil huruf pertama dan terakhir
-}
+import getLocketCodeFromName from "../helper/getLocketCodeFromName"
+import printQueue from "../helper/printQueue"
 
 export interface Locket {
     id: number
@@ -222,6 +217,7 @@ export default function AddQueueScreen() {
                         <TouchableOpacity
                             onPress={(e) => {
                                 addQueue(value.id)
+                                printQueue(value.name, total)
                             }}
                             disabled={loading}
                             style={{
