@@ -181,7 +181,7 @@ export default function AddQueueScreen() {
                             className="bg-blues text-center p-4 rounded-lg"
                             onPress={(e) => {
                                 addQueue(value.id)
-                                printQueue(value.name, total)
+                                printQueue(value.name, totalQueue)
                             }}
                             disabled={loading}
                         >

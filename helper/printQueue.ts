@@ -2,8 +2,10 @@ import { options } from "./../node_modules/colorette/index.d"
 import * as Print from "expo-print"
 import getLocketCodeFromName from "./getLocketCodeFromName"
 
-const printQueue = async (locketName: string, totalQueue: string) => {
+const printQueue = async (locketName: string, totalQueue: number) => {
     try {
+        const locketCode = getLocketCodeFromName(locketName)
+        const total = `${locketCode}${String(totalQueue + 1).padStart(2, "0")}`
         const html = `
         <html>
     <head>
@@ -65,7 +67,7 @@ const printQueue = async (locketName: string, totalQueue: string) => {
             <h2>Dinas Pendidikan Kota Palangka Raya</h2>
             <hr />
             <h3>Nomor</h3>
-            <h1>${totalQueue}</h1>
+            <h1>${total}</h1>
             <h3>Loket ${locketName}</h3>
             <p>Silahkan tunggu sampai giliran anda di panggil. Terima kasih!</p>
         </div>
