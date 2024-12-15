@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "../types"
+import config from "../config"
 
 const formSchema = z.object({
     email: z.string().email({ message: "Email tidak valid" }).min(1),
@@ -38,7 +39,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         setLoading(true)
         try {
             const response = await fetch(
-                "https://api-queue.nudriin.space/api/users/login",
+                `${config.API_BASE_URL}/api/users/login`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

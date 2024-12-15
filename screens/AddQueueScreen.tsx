@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import {
     ActivityIndicator,
-    Button,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -11,20 +10,9 @@ import { socket } from "../socket/socket"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import getLocketCodeFromName from "../helper/getLocketCodeFromName"
 import printQueue from "../helper/printQueue"
-
-export interface Locket {
-    id: number
-    name: string
-    createdAt: Date
-}
-
-export interface QueueAggregateResponse {
-    total?: number
-    currentQueue?: number
-    nextQueue?: number
-    queueRemainder?: number
-    locket_id: number
-}
+import { Locket } from "../model/locket"
+import { QueueAggregateResponse } from "../model/queue"
+import config from "../config"
 
 export default function AddQueueScreen() {
     const [loading, setLoading] = useState(false)
@@ -36,15 +24,12 @@ export default function AddQueueScreen() {
     const getAllLocket = useCallback(async () => {
         try {
             setLoading(true)
-            const response = await fetch(
-                "https://api-queue.nudriin.space/api/locket",
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
+            const response = await fetch(`${config.API_BASE_URL}/api/locket`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
 
             const body = await response.json()
             if (!body.errors) {
@@ -66,7 +51,7 @@ export default function AddQueueScreen() {
             setLoading(true)
             const queuePromises = locket.map(async (value) => {
                 const response = await fetch(
-                    `https://api-queue.nudriin.space/api/queue/locket/${value.id}/total`,
+                    `${config.API_BASE_URL}/api/queue/locket/${value.id}/total`,
                     {
                         method: "GET",
                         headers: {
@@ -134,19 +119,16 @@ export default function AddQueueScreen() {
             socket.emit("getAllQueue", id)
 
             const token = await AsyncStorage.getItem("authToken") // Get auth token from AsyncStorage
-            const response = await fetch(
-                "https://api-queue.nudriin.space/api/queue",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        locket_id: id,
-                    }),
-                }
-            )
+            const response = await fetch(`${config.API_BASE_URL}/api/queue`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    locket_id: id,
+                }),
+            })
 
             const body = await response.json()
             if (!body.errors) {

@@ -23,6 +23,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "proxy": {
+        "/api": "https://api-queue.nudriin.space"
+      }
     }
   }
 }
