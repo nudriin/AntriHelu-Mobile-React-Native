@@ -45,17 +45,22 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
 
     const checkLoginStatus = async () => {
-        const token = await AsyncStorage.getItem("authToken")
-        setIsLoggedIn(!!token) // Jika token ada, berarti sudah login
+        try {
+            const token = await AsyncStorage.getItem("authToken")
+            setIsLoggedIn(!!token)
+
+            if (token) {
+                navigation.navigate("AddQueueScreen")
+            }
+        } catch (error) {
+            console.error("Error checking login status:", error)
+            setIsLoggedIn(false)
+        }
     }
 
     useEffect(() => {
         checkLoginStatus()
     }, [])
-
-    if (isLoggedIn) {
-        navigation.navigate("AddQueueScreen")
-    }
 
     const handleLogin = async (data: FormSchemaType) => {
         setLoading(true)

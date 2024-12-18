@@ -13,6 +13,13 @@ import printQueue from "../helper/printQueue"
 import { Locket } from "../model/locket"
 import { QueueAggregateResponse } from "../model/queue"
 import config from "../config"
+import { createStaticNavigation, useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+
+type RootStackParamList = {
+    HomeScreen: undefined
+    LoginScreen: undefined
+}
 
 export default function AddQueueScreen() {
     const [loading, setLoading] = useState(false)
@@ -20,6 +27,8 @@ export default function AddQueueScreen() {
     const [queues, setQueues] = useState<Map<number, QueueAggregateResponse>>(
         new Map()
     )
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
     const getAllLocket = useCallback(async () => {
         try {
@@ -81,6 +90,28 @@ export default function AddQueueScreen() {
             console.log(error)
         }
     }, [locket])
+
+    const checkLoginStatus = useCallback(async () => {
+        try {
+            const token = await AsyncStorage.getItem("authToken")
+            if (!token) {
+                setIsLoggedIn(false)
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: "LoginScreen" }],
+                })
+            } else {
+                setIsLoggedIn(true)
+            }
+        } catch (error) {
+            console.error("Error checking login status:", error)
+            setIsLoggedIn(false)
+        }
+    }, [navigation])
+
+    useEffect(() => {
+        checkLoginStatus()
+    }, [])
 
     useEffect(() => {
         getAllLocket()
@@ -164,21 +195,21 @@ export default function AddQueueScreen() {
 
                 return (
                     <View
-                        className="text-center bg-white border-2 mb-4 p-6 rounded-3xl"
+                        className="p-6 mb-4 text-center bg-white border-2 rounded-3xl"
                         key={index}
                     >
-                        <Text className="text-center text-blck font-medium text-2xl mb-2">
+                        <Text className="mb-2 text-2xl font-medium text-center text-blck">
                             Antrian Loket
                         </Text>
-                        <Text className="text-center text-blues text-4xl font-bold mt-4 mb-4">
+                        <Text className="mt-4 mb-4 text-4xl font-bold text-center text-blues">
                             {total}
                         </Text>
-                        <Text className="text-center text-blck font-medium text-2xl mb-3">
+                        <Text className="mb-3 text-2xl font-medium text-center text-blck">
                             {value.name.toUpperCase()}
                         </Text>
 
                         <TouchableOpacity
-                            className="bg-blues text-center p-4 rounded-lg"
+                            className="p-4 text-center rounded-lg bg-blues"
                             onPress={(e) => {
                                 addQueue(value.id)
                                 printQueue(value.name, totalQueue)
@@ -188,7 +219,7 @@ export default function AddQueueScreen() {
                             {loading ? (
                                 <ActivityIndicator color="#fff" />
                             ) : (
-                                <Text className="text-center text-white font-bold">
+                                <Text className="font-bold text-center text-white">
                                     Tambah Antrian
                                 </Text>
                             )}
